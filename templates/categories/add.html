@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Добавить категорию</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label">Название категории</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+                <div class="form-text">Название должно быть уникальным</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <a href="{{ url_for('categories') }}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

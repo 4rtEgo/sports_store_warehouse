@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Управление складом</h1>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Список товаров</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Дата добавления</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category_ref.name }}</td>
+                    <td>{{ product.price }} ₽</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.date_added.strftime('%d.%m.%Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_product', id=product.id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                        <a href="{{ url_for('delete_product', id=product.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены?')">Удалить</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Статистика</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Всего товаров</h5>
+                        <p class="card-text display-6">{{ products|length }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Категорий</h5>
+                        <p class="card-text display-6">{{ categories|length }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Общая стоимость</h5>
+                        <p class="card-text display-6">{{ "%.2f"|format(products|sum(attribute='price')) }} ₽</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Складские ячейки</h1>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCellModal">
+        Добавить ячейку
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Код</th>
+                    <th>Описание</th>
+                    <th>Вместимость</th>
+                    <th>Заполнено</th>
+                    <th>Товары</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cell in cells %}
+                <tr>
+                    <td>{{ cell.code }}</td>
+                    <td>{{ cell.description }}</td>
+                    <td>{{ cell.capacity }}</td>
+                    <td>{{ cell.products|sum(attribute='quantity') }}</td>
+                    <td>
+                        {% for product in cell.products %}
+                        {{ product.name }} ({{ product.quantity }})<br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_cell', id=cell.id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                        <form action="{{ url_for('delete_cell', id=cell.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить ячейку?')">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Модальное окно добавления -->
+<div class="modal fade" id="addCellModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('add_cell') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить ячейку</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Код ячейки</label>
+                        <input type="text" class="form-control" id="code" name="code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Описание</label>
+                        <input type="text" class="form-control" id="description" name="description">
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Вместимость</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
